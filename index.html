@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot</title>
+    <style>
+        /* Add your custom styles here */
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <input type="text" id="user-input" placeholder="Type your message here" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("user-input").value;
+            document.getElementById("user-input").value = "";
+            addMessage("user", userInput);
+
+            fetch('/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: userInput })
+            })
+                .then(response => response.json())
+                .then(data => addMessage("bot", data.response));
+        }
+
+        function addMessage(sender, message) {
+            var chatLog = document.getElementById("chat-log");
+            var messageContainer = document.createElement("div");
+            messageContainer.classList.add(sender);
+            messageContainer.innerHTML = "<strong>" + sender + ":</strong> " + message;
+            chatLog.appendChild(messageContainer);
+        }
+    </script>
+</body>
+</html>
